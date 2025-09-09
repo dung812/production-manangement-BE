@@ -10,8 +10,9 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "nest build",
+    "prebuild": "rimraf dist",
+    "vercel-build": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -38,8 +39,10 @@
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.17",
-    "@nestjs/typeorm": "^10.0.0",
     "@nestjs/throttler": "^5.0.1",
+    "@nestjs/typeorm": "^10.0.0",
+    "@vendia/serverless-express": "^4.12.6",
+    "@vercel/node": "^5.3.21",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "helmet": "^7.1.0",
