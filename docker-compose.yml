@@ -1,33 +1,25 @@
-version: '3.8'
-
+version: "3.9"
 services:
-  app:
-    build:
-      context: .
-      target: development
+  api:
+    build: .
+    container_name: nest-product-api
     ports:
-      - '${APP_PORT:-3000}:${APP_PORT:-3000}'
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://${DATABASE_USERNAME:-postgres}:${DATABASE_PASSWORD:-password}@postgres:5432/${DATABASE_NAME:-nest_product_api}
-    depends_on:
-      - postgres
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    command: npm run start:dev
+      - "3000:3000"
+    env_file:
+      - .env
+    # depends_on:
+    #   - db
 
-  postgres:
-    image: postgres:15-alpine
-    restart: always
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_USER=${DATABASE_USERNAME:-postgres}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-password}
-      - POSTGRES_DB=${DATABASE_NAME:-nest_product_api}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  # db:
+  #   image: postgres:16
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: demo
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
 
-volumes:
-  postgres_data:
+# volumes:
+#   pgdata:

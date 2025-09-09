@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: nest-product-api
+    env: docker
+    plan: free
+    autoDeploy: true
+    region: singapore
+    # Render will build from the Dockerfile at repo root.
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: GLOBAL_PREFIX
+        value: api/v1
+      - key: DATABASE_URL
+        fromSecret: DATABASE_URL

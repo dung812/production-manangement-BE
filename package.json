@@ -26,7 +26,10 @@
     "seed": "ts-node -r tsconfig-paths/register src/seed.ts",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate",
     "migration:run": "typeorm-ts-node-commonjs migration:run",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert"
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert",
+    "docker:build": "docker build -t nest-product-api .",
+    "docker:run": "docker run --rm -p 3000:3000 --env-file .env nest-product-api",
+    "docker:up": "docker compose up --build"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
