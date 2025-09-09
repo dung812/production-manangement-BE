@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 import { ProductService } from './product.service';
@@ -8,7 +7,6 @@ import { CreateProductDto } from './dto/create-product.dto';
 
 describe('ProductService', () => {
   let service: ProductService;
-  let repository: Repository<Product>;
 
   const mockRepository = {
     findOne: jest.fn(),
@@ -30,7 +28,6 @@ describe('ProductService', () => {
     }).compile();
 
     service = module.get<ProductService>(ProductService);
-    repository = module.get<Repository<Product>>(getRepositoryToken(Product));
   });
 
   afterEach(() => {
