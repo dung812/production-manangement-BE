@@ -7,7 +7,15 @@ import { ConfigService } from '@nestjs/config';
 let cachedServer: any;
 export async function getVercelServer() {
   if (cachedServer) return cachedServer;
-  const app = await NestFactory.create(AppModule, { bodyParser: true });
+  const app = await NestFactory.create(AppModule, { 
+    bodyParser: true,
+    cors: {
+      origin: true,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    }
+  });
   const config = app.get(ConfigService);
   const globalPrefix = config.get<string>('GLOBAL_PREFIX') || 'api/v1';
   app.setGlobalPrefix(globalPrefix);
