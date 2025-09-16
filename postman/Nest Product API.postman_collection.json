@@ -1,0 +1,267 @@
+{
+  "info": {
+    "name": "Nest Product API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "e2b7f9d0-0000-4d00-9000-collection"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "List products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?page=1&limit=10&search=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get product by id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create product",
+          "request": {
+            "method": "POST",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"PRD-001\",\n  \"name\": \"Sample Product\",\n  \"categoryId\": 1,\n  \"unit\": \"pcs\",\n  \"description\": \"Optional description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Update product",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product\",\n  \"categoryId\": 1,\n  \"unit\": \"pcs\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete product",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BOM",
+      "item": [
+        {
+          "name": "List BOM",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bom?rootId={{rootProductId}}&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["bom"],
+              "query": [
+                {"key": "rootId", "value": "{{rootProductId}}"},
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get BOM by id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bom/{{bomId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bom", "{{bomId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create BOM",
+          "request": {
+            "method": "POST",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rootProductId\": 1,\n  \"componentProductId\": 2,\n  \"quantity\": 1\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bom", "host": ["{{baseUrl}}"], "path": ["bom"]}
+          }
+        },
+        {
+          "name": "Update BOM",
+          "request": {
+            "method": "PUT",
+            "header": [ {"key": "Content-Type", "value": "application/json"} ],
+            "body": {"mode": "raw", "raw": "{\n  \"quantity\": 2\n}"},
+            "url": {"raw": "{{baseUrl}}/bom/{{bomId}}", "host": ["{{baseUrl}}"], "path": ["bom", "{{bomId}}"]}
+          }
+        },
+        {
+          "name": "Delete BOM",
+          "request": {
+            "method": "DELETE",
+            "url": {"raw": "{{baseUrl}}/bom/{{bomId}}", "host": ["{{baseUrl}}"], "path": ["bom", "{{bomId}}"]}
+          }
+        },
+        {
+          "name": "BOM Tree",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bom/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["bom", "tree"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Material Categories",
+      "item": [
+        {
+          "name": "List material categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/material-categories?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["material-categories"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get material category by id",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/material-categories/{{materialCategoryId}}", "host": ["{{baseUrl}}"], "path": ["material-categories", "{{materialCategoryId}}"]}
+          }
+        },
+        {
+          "name": "Create material category",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"code\": \"MC-001\",\n  \"name\": \"Category A\"\n}"},
+            "url": {"raw": "{{baseUrl}}/material-categories", "host": ["{{baseUrl}}"], "path": ["material-categories"]}
+          }
+        },
+        {
+          "name": "Update material category",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Updated Category\"\n}"},
+            "url": {"raw": "{{baseUrl}}/material-categories/{{materialCategoryId}}", "host": ["{{baseUrl}}"], "path": ["material-categories", "{{materialCategoryId}}"]}
+          }
+        },
+        {
+          "name": "Delete material category",
+          "request": {
+            "method": "DELETE",
+            "url": {"raw": "{{baseUrl}}/material-categories/{{materialCategoryId}}", "host": ["{{baseUrl}}"], "path": ["material-categories", "{{materialCategoryId}}"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Categories",
+      "item": [
+        {
+          "name": "List product categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/product-categories?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["product-categories"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": ""}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get product category by id",
+          "request": {"method": "GET", "url": {"raw": "{{baseUrl}}/product-categories/{{productCategoryId}}", "host": ["{{baseUrl}}"], "path": ["product-categories", "{{productCategoryId}}"]}}
+        },
+        {
+          "name": "Create product category",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"code\": \"PC-001\",\n  \"name\": \"Category A\"\n}"},
+            "url": {"raw": "{{baseUrl}}/product-categories", "host": ["{{baseUrl}}"], "path": ["product-categories"]}
+          }
+        },
+        {
+          "name": "Update product category",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"name\": \"Updated Category\"\n}"},
+            "url": {"raw": "{{baseUrl}}/product-categories/{{productCategoryId}}", "host": ["{{baseUrl}}"], "path": ["product-categories", "{{productCategoryId}}"]}
+          }
+        },
+        {
+          "name": "Delete product category",
+          "request": {"method": "DELETE", "url": {"raw": "{{baseUrl}}/product-categories/{{productCategoryId}}", "host": ["{{baseUrl}}"], "path": ["product-categories", "{{productCategoryId}}"]}}
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:3000/api/v1"},
+    {"key": "productId", "value": "1"},
+    {"key": "bomId", "value": "1"},
+    {"key": "rootProductId", "value": "1"},
+    {"key": "materialCategoryId", "value": "1"},
+    {"key": "productCategoryId", "value": "1"}
+  ]
+}
