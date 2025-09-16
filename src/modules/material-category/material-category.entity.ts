@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AbstractEntity } from '@/common/entities/abstract.entity';
 
-export type MaterialType = 'raw_material' | 'semi_finished' | 'finished';
+export type MaterialType = 'raw_material' | 'semi_finished' | 'finished' | 'auxiliary_material' | 'packaging_material';
 
 @Entity({ name: 'material_categories' })
 export class MaterialCategory extends AbstractEntity {
@@ -37,7 +37,7 @@ export class MaterialCategory extends AbstractEntity {
 
   @ApiProperty({ 
     description: 'Material type',
-    enum: ['raw_material', 'semi_finished', 'finished'],
+    enum: ['raw_material', 'semi_finished', 'finished', 'auxiliary_material', 'packaging_material'],
     default: 'raw_material'
   })
   @Column({ type: 'varchar', default: 'raw_material' })

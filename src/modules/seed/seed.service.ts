@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { SeedLog } from './seed-log.entity';
 import { Product } from '../product/product.entity';
 import { MaterialCategory } from '../material-category/material-category.entity';
+import { ProductCategory } from '../product-category/product-category.entity';
+import { Bom } from '../bom/bom.entity';
 
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {
@@ -13,6 +15,8 @@ export class SeedService implements OnApplicationBootstrap {
     @InjectRepository(SeedLog) private readonly seedLogRepo: Repository<SeedLog>,
     @InjectRepository(Product) private readonly productRepo: Repository<Product>,
     @InjectRepository(MaterialCategory) private readonly materialCategoryRepo: Repository<MaterialCategory>,
+    @InjectRepository(ProductCategory) private readonly productCategoryRepo: Repository<ProductCategory>,
+    @InjectRepository(Bom) private readonly bomRepo: Repository<Bom>,
   ) {}
 
   async onApplicationBootstrap() {
@@ -22,7 +26,9 @@ export class SeedService implements OnApplicationBootstrap {
     }
 
     await this.seedMaterialCategories();
+    await this.seedProductCategories();
     await this.seedProducts();
+    await this.seedBoms();
   }
 
   private async seedMaterialCategories() {
@@ -44,261 +50,261 @@ export class SeedService implements OnApplicationBootstrap {
     // Vietnamese material category data
     const materialCategories: Partial<MaterialCategory>[] = [
       {
-        code: 'VT-THEP-001',
-        name: 'Thép xây dựng',
-        detailName: 'Thép xây dựng các loại',
-        description: 'Thép dùng trong xây dựng công trình',
-        specifications: 'Tiêu chuẩn TCVN 1651:2008',
+        code: 'MC-THEP-TAM',
+        name: 'Thép tấm',
+        detailName: 'Thép tấm carbon thường',
+        description: 'Thép tấm dùng trong sản xuất cơ khí',
+        specifications: 'Độ dày từ 2mm đến 50mm, tiêu chuẩn TCVN',
         safetyStockNumber: 100,
-        unit: 'tấn',
-        type: 'raw_material',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-XI-MANG-001',
-        name: 'Xi măng Portland',
-        detailName: 'Xi măng Portland PC40',
-        description: 'Xi măng dùng cho xây dựng dân dụng và công nghiệp',
-        specifications: 'TCVN 2682:2009, PC40',
-        safetyStockNumber: 200,
-        unit: 'tấn',
-        type: 'raw_material',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-CAT-001',
-        name: 'Cát xây dựng',
-        detailName: 'Cát sạch xây dựng',
-        description: 'Cát dùng trong xây dựng và trộn bê tông',
-        specifications: 'Cát sạch, độ mịn 2.5-3.0',
-        safetyStockNumber: 50,
-        unit: 'm³',
-        type: 'raw_material',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-DA-001',
-        name: 'Đá dăm xây dựng',
-        detailName: 'Đá dăm 1x2 xây dựng',
-        description: 'Đá dăm dùng trong xây dựng và trộn bê tông',
-        specifications: 'Cỡ hạt 10-20mm',
-        safetyStockNumber: 30,
-        unit: 'm³',
-        type: 'raw_material',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-GACH-001',
-        name: 'Gạch xây',
-        detailName: 'Gạch đỏ nung xây dựng',
-        description: 'Gạch đỏ nung dùng xây tường',
-        specifications: 'Kích thước 220x105x60mm',
-        safetyStockNumber: 10000,
-        unit: 'viên',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-NGOI-001',
-        name: 'Ngói lợp',
-        detailName: 'Ngói đất nung lợp mái',
-        description: 'Ngói đất nung dùng lợp mái nhà',
-        specifications: 'Ngói âm dương, màu đỏ gạch',
-        safetyStockNumber: 5000,
-        unit: 'viên',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-THUY-TINH-001',
-        name: 'Thủy tinh xây dựng',
-        detailName: 'Kính cường lực xây dựng',
-        description: 'Kính cường lực dùng trong xây dựng',
-        specifications: 'Dày 8mm, kích thước 2m x 3m',
-        safetyStockNumber: 20,
-        unit: 'm²',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-SON-001',
-        name: 'Sơn nước nội thất',
-        detailName: 'Sơn nước cao cấp nội thất',
-        description: 'Sơn nước không mùi dùng cho nội thất',
-        specifications: 'Thùng 18L, màu trắng',
-        safetyStockNumber: 50,
-        unit: 'thùng',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-GO-001',
-        name: 'Gỗ thông xẻ',
-        detailName: 'Gỗ thông xẻ sấy khô',
-        description: 'Gỗ thông tự nhiên xẻ sấy khô',
-        specifications: 'Kích thước 5x10x400cm',
-        safetyStockNumber: 100,
-        unit: 'thanh',
-        type: 'raw_material',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-DINH-001',
-        name: 'Đinh thép',
-        detailName: 'Đinh thép mạ kẽm',
-        description: 'Đinh thép mạ kẽm chống rỉ sét',
-        specifications: 'Đường kính 3mm, dài 75mm',
-        safetyStockNumber: 1000,
         unit: 'kg',
-        type: 'finished',
+        type: 'raw_material',
         isActive: true,
         createdBy: 'admin',
         updatedBy: 'admin',
       },
       {
-        code: 'VT-THEP-BETONNG-001',
-        name: 'Thép bê tông',
-        detailName: 'Thép bê tông CB300-V',
-        description: 'Thép bê tông dùng đổ móng, cột, dầm',
-        specifications: 'Đường kính 12mm, CB300-V',
+        code: 'MC-THEP-ONG',
+        name: 'Thép ống',
+        detailName: 'Thép ống tròn đen',
+        description: 'Thép ống tròn dùng cho kết cấu',
+        specifications: 'Đường kính từ 20mm đến 300mm',
         safetyStockNumber: 50,
-        unit: 'tấn',
+        unit: 'mét',
         type: 'raw_material',
         isActive: true,
         createdBy: 'admin',
         updatedBy: 'admin',
       },
       {
-        code: 'VT-GACH-BLOCK-001',
-        name: 'Gạch block',
-        detailName: 'Gạch block bê tông nhẹ',
-        description: 'Gạch block bê tông nhẹ xây tường',
-        specifications: 'Kích thước 200x200x400mm',
-        safetyStockNumber: 2000,
-        unit: 'viên',
-        type: 'finished',
+        code: 'MC-NHOM-TAM',
+        name: 'Nhôm tấm',
+        detailName: 'Tấm nhôm hợp kim 6061',
+        description: 'Tấm nhôm chất lượng cao cho gia công cơ khí',
+        specifications: 'Độ dày 1-20mm, kích thước 1000x2000mm',
+        safetyStockNumber: 30,
+        unit: 'tấm',
+        type: 'raw_material',
         isActive: true,
         createdBy: 'admin',
         updatedBy: 'admin',
       },
       {
-        code: 'VT-CHAT-CHONG-THAM-001',
-        name: 'Chất chống thấm',
-        detailName: 'Chất chống thấm Sika',
-        description: 'Chất chống thấm gốc xi măng',
-        specifications: 'Bao 25kg, màu xám',
-        safetyStockNumber: 100,
-        unit: 'bao',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-GACH-LAT-001',
-        name: 'Gạch lát nền',
-        detailName: 'Gạch men lát nền 60x60',
-        description: 'Gạch men cao cấp lát nền phòng khách',
-        specifications: 'Kích thước 60x60cm, bóng kiếng',
+        code: 'MC-DAY-DONG',
+        name: 'Dây đồng',
+        detailName: 'Dây đồng điện lực',
+        description: 'Dây dẫn điện bằng đồng tinh khiết',
+        specifications: 'Tiết diện từ 1.5mm² đến 25mm²',
         safetyStockNumber: 500,
-        unit: 'm²',
-        type: 'finished',
+        unit: 'mét',
+        type: 'raw_material',
         isActive: true,
         createdBy: 'admin',
         updatedBy: 'admin',
       },
       {
-        code: 'VT-GACH-OP-001',
-        name: 'Gạch ốp tường',
-        detailName: 'Gạch men ốp tường 30x60',
-        description: 'Gạch men ốp tường phòng tắm, bếp',
-        specifications: 'Kích thước 30x60cm, mặt nhám',
-        safetyStockNumber: 300,
-        unit: 'm²',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-KEO-DAN-001',
-        name: 'Keo dán gạch',
-        detailName: 'Keo dán gạch chuyên dụng',
-        description: 'Keo dán gạch chống thấm, độ bám cao',
-        specifications: 'Bao 20kg, màu xám',
-        safetyStockNumber: 200,
-        unit: 'bao',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-CHAT-RON-001',
-        name: 'Chất rón khe',
-        detailName: 'Chất rón khe gạch chuyên dụng',
-        description: 'Chất rón khe chống thấm, chống nấm mốc',
-        specifications: 'Bao 5kg, màu trắng',
-        safetyStockNumber: 150,
-        unit: 'bao',
-        type: 'finished',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-THEP-HOP-001',
-        name: 'Thép hộp vuông',
-        detailName: 'Thép hộp vuông 50x50',
-        description: 'Thép hộp vuông dùng làm khung, cột',
-        specifications: 'Kích thước 50x50mm, dày 2mm',
+        code: 'MC-CAO-SU',
+        name: 'Cao su',
+        detailName: 'Cao su công nghiệp NBR',
+        description: 'Cao su chịu dầu và nhiệt độ cao',
+        specifications: 'Độ cứng Shore A 70±5, chịu nhiệt -40°C đến +120°C',
         safetyStockNumber: 20,
-        unit: 'tấn',
+        unit: 'kg',
+        type: 'auxiliary_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-INOX-304',
+        name: 'Inox 304',
+        detailName: 'Thép không gỉ 304',
+        description: 'Thép không gỉ chất lượng cao',
+        specifications: 'Thành phần: 18% Cr, 8% Ni, chịu ăn mòn tốt',
+        safetyStockNumber: 80,
+        unit: 'kg',
         type: 'raw_material',
         isActive: true,
         createdBy: 'admin',
         updatedBy: 'admin',
       },
       {
-        code: 'VT-THEP-TRON-001',
-        name: 'Thép tròn trơn',
-        detailName: 'Thép tròn trơn CT3',
-        description: 'Thép tròn trơn dùng gia công cơ khí',
-        specifications: 'Đường kính 20mm, CT3',
-        safetyStockNumber: 15,
-        unit: 'tấn',
-        type: 'raw_material',
-        isActive: true,
-        createdBy: 'admin',
-        updatedBy: 'admin',
-      },
-      {
-        code: 'VT-NHUA-PVC-001',
-        name: 'Ống nhựa PVC',
-        detailName: 'Ống nhựa PVC cấp nước',
-        description: 'Ống nhựa PVC dùng cấp nước sinh hoạt',
-        specifications: 'Đường kính 90mm, dài 6m',
+        code: 'MC-NHUA-PVC',
+        name: 'Nhựa PVC',
+        detailName: 'Ống nhựa PVC áp lực',
+        description: 'Ống nhựa PVC chịu áp lực cao',
+        specifications: 'Áp lực làm việc PN10, PN16',
         safetyStockNumber: 200,
-        unit: 'cây',
-        type: 'finished',
+        unit: 'mét',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-BANH-RANG',
+        name: 'Bánh răng',
+        detailName: 'Bánh răng thép carbon',
+        description: 'Bánh răng gia công chính xác',
+        specifications: 'Modun từ 1 đến 10, số răng từ 12 đến 120',
+        safetyStockNumber: 25,
+        unit: 'cái',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-VONG-BI',
+        name: 'Vòng bi',
+        detailName: 'Vòng bi bi cầu',
+        description: 'Vòng bi chất lượng cao cho máy móc',
+        specifications: 'Cấp chính xác P0, P6, chịu tải từ nhẹ đến nặng',
+        safetyStockNumber: 100,
+        unit: 'cái',
+        type: 'auxiliary_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-DAN-THUY-LUC',
+        name: 'Dầu thủy lực',
+        detailName: 'Dầu thủy lực ISO VG 46',
+        description: 'Dầu thủy lực chất lượng cao',
+        specifications: 'Độ nhớt ISO VG 46, chỉ số độ nhớt >100',
+        safetyStockNumber: 500,
+        unit: 'lít',
+        type: 'auxiliary_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-KEO-DAN',
+        name: 'Keo dán',
+        detailName: 'Keo dán epoxy 2 thành phần',
+        description: 'Keo dán cường độ cao cho kim loại',
+        specifications: 'Cường độ kéo >25MPa, thời gian đóng rắn 24h',
+        safetyStockNumber: 50,
+        unit: 'kg',
+        type: 'auxiliary_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-SON-CHONG-RI',
+        name: 'Sơn chống rỉ',
+        detailName: 'Sơn lót chống rỉ epoxy',
+        description: 'Sơn bảo vệ kim loại khỏi ăn mòn',
+        specifications: 'Độ bám dính cấp 1, độ che phủ >98%',
+        safetyStockNumber: 100,
+        unit: 'lít',
+        type: 'auxiliary_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-GIAY-NHAM',
+        name: 'Giấy nhám',
+        detailName: 'Giấy nhám oxide nhôm',
+        description: 'Giấy nhám chất lượng cao cho đánh bóng',
+        specifications: 'Độ hạt từ P80 đến P400',
+        safetyStockNumber: 200,
+        unit: 'tờ',
+        type: 'auxiliary_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-BANG-KENG',
+        name: 'Băng keo',
+        detailName: 'Băng keo điện PVC',
+        description: 'Băng keo cách điện chất lượng cao',
+        specifications: 'Điện áp chịu đựng 600V, độ dày 0.13mm',
+        safetyStockNumber: 100,
+        unit: 'cuộn',
+        type: 'packaging_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-THUNG-CARTON',
+        name: 'Thùng carton',
+        detailName: 'Thùng carton 5 lớp',
+        description: 'Thùng đóng gói sản phẩm',
+        specifications: 'Kích thước đa dạng, chịu tải 20-50kg',
+        safetyStockNumber: 500,
+        unit: 'cái',
+        type: 'packaging_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-MANG-PE',
+        name: 'Màng PE',
+        detailName: 'Màng polyethylene bọc hàng',
+        description: 'Màng bọc bảo vệ sản phẩm',
+        specifications: 'Độ dày 0.05-0.2mm, trong suốt hoặc đen',
+        safetyStockNumber: 50,
+        unit: 'kg',
+        type: 'packaging_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-FOAM-BAO-VE',
+        name: 'Foam bảo vệ',
+        detailName: 'Foam polyurethane đệm lót',
+        description: 'Vật liệu đệm bảo vệ sản phẩm',
+        specifications: 'Mật độ 25-35kg/m³, độ đàn hồi cao',
+        safetyStockNumber: 100,
+        unit: 'tấm',
+        type: 'packaging_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-DAY-THEP',
+        name: 'Dây thép',
+        detailName: 'Dây thép đóng kiện',
+        description: 'Dây thép dùng để đóng kiện hàng hóa',
+        specifications: 'Đường kính 0.5-1.2mm, mạ kẽm',
+        safetyStockNumber: 200,
+        unit: 'kg',
+        type: 'packaging_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-NHAN-TEM',
+        name: 'Nhãn tem',
+        detailName: 'Nhãn tem decal in thông tin',
+        description: 'Nhãn dán thông tin sản phẩm',
+        specifications: 'Chất liệu PVC, chống nước, kích thước đa dạng',
+        safetyStockNumber: 1000,
+        unit: 'cái',
+        type: 'packaging_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'MC-BONG-XOP',
+        name: 'Bọng xốp',
+        detailName: 'Bọng xốp khí bảo vệ',
+        description: 'Màng bọng khí chống sốc',
+        specifications: 'Đường kính bọng 10mm, 20mm, độ dày 0.1mm',
+        safetyStockNumber: 100,
+        unit: 'mét',
+        type: 'packaging_material',
         isActive: true,
         createdBy: 'admin',
         updatedBy: 'admin',
@@ -307,7 +313,102 @@ export class SeedService implements OnApplicationBootstrap {
 
     await this.materialCategoryRepo.save(this.materialCategoryRepo.create(materialCategories));
     await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
-    this.logger.log('✅ Seeded Vietnamese material categories.');
+    this.logger.log('✅ Seeded initial material categories.');
+  }
+
+  private async seedProductCategories() {
+    const marker = 'product-categories-initialized';
+    const already = await this.seedLogRepo.findOne({ where: { name: marker } });
+    if (already) {
+      this.logger.log('Product categories seed skipped (already initialized).');
+      return;
+    }
+
+    // Idempotent guard: also skip if data already exists.
+    const count = await this.productCategoryRepo.count();
+    if (count > 0) {
+      this.logger.log('Product categories seed skipped (table not empty).');
+      await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
+      return;
+    }
+
+    // Vietnamese product category data
+    const productCategories: Partial<ProductCategory>[] = [
+      {
+        name: 'Điện tử',
+        description: 'Các sản phẩm điện tử, thiết bị công nghệ',
+        type: 'electronics',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Thời trang',
+        description: 'Quần áo, phụ kiện thời trang nam nữ',
+        type: 'clothing',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Thực phẩm',
+        description: 'Thực phẩm tươi sống, đóng gói',
+        type: 'food',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Nội thất',
+        description: 'Bàn ghế, tủ kệ, đồ trang trí nội thất',
+        type: 'furniture',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Sách',
+        description: 'Sách giáo khoa, tiểu thuyết, tạp chí',
+        type: 'books',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Thể thao',
+        description: 'Dụng cụ thể thao, quần áo thể thao',
+        type: 'sports',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Làm đẹp',
+        description: 'Mỹ phẩm, dụng cụ chăm sóc sắc đẹp',
+        type: 'beauty',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Ô tô',
+        description: 'Phụ tùng ô tô, dầu nhớt, phụ kiện xe hơi',
+        type: 'automotive',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Gia dụng',
+        description: 'Đồ gia dụng, thiết bị nhà bếp',
+        type: 'home',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        name: 'Khác',
+        description: 'Các sản phẩm khác không thuộc danh mục trên',
+        type: 'other',
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+    ];
+
+    await this.productCategoryRepo.save(this.productCategoryRepo.create(productCategories));
+    await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
+    this.logger.log('✅ Seeded initial product categories.');
   }
 
   private async seedProducts() {
@@ -775,5 +876,86 @@ export class SeedService implements OnApplicationBootstrap {
     await this.productRepo.save(this.productRepo.create(items));
     await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
     this.logger.log('✅ Seeded initial products.');
+  }
+
+  private async seedBoms() {
+    const marker = 'boms-initialized';
+    const already = await this.seedLogRepo.findOne({ where: { name: marker } });
+    if (already) {
+      this.logger.log('BOM seed skipped (already initialized).');
+      return;
+    }
+
+    const count = await this.bomRepo.count();
+    if (count > 0) {
+      this.logger.log('BOM seed skipped (table not empty).');
+      await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
+      return;
+    }
+
+    // Build multiple BOM trees (projects) with deep levels
+    const rootProductIds = [1, 2, 3];
+
+    const makePath = (rootId: number, parentPath: string | undefined, index: number) =>
+      parentPath ? `${parentPath}/${index}` : `${rootId}/${index}`;
+
+    const createNode = async (
+      rootId: number,
+      parent: Bom | undefined,
+      index: number,
+      materialId: string,
+      qtyMat: number,
+      options: Partial<Bom> = {},
+    ) => {
+      const entity = this.bomRepo.create({
+        rootProductId: rootId,
+        parentId: parent?.id,
+        // Default to root product when node is a material/sub-assembly without its own catalog product
+        productId: options.productId ?? rootId,
+        productPartPath: makePath(rootId, parent?.productPartPath, index),
+        quantityOfProd: options.quantityOfProd ?? 1,
+        materialId,
+        quantityOfMaterials: qtyMat,
+        tileHH: options.tileHH ?? '0%',
+        applicationDate: options.applicationDate ?? '2025-01-01',
+        endDate: options.endDate,
+        tkVatTu: options.tkVatTu,
+        tkh: options.tkh,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      });
+      return this.bomRepo.save(entity);
+    };
+
+    for (const rootProductId of rootProductIds) {
+      // Level 1: root assembly for project
+      const root = await createNode(rootProductId, undefined, 1, 'TP-THANH-PHAN-CHINH', 1, {
+        productId: rootProductId,
+        quantityOfProd: 1,
+      });
+
+      // Level 2: two main assemblies
+      const assy1 = await createNode(rootProductId, root, 1, 'MC-THEP-TAM', 2, { tkVatTu: '152', tkh: '621' });
+      const assy2 = await createNode(rootProductId, root, 2, 'MC-INOX-304', 1, { tkVatTu: '153', tkh: '621' });
+
+      // Level 3 under assy1
+      await createNode(rootProductId, assy1, 1, 'MC-SON-CHONG-RI', 1, {});
+      const a1c2 = await createNode(rootProductId, assy1, 2, 'MC-DAY-THEP', 5, {});
+
+      // Level 3 under assy2
+      const a2c1 = await createNode(rootProductId, assy2, 1, 'MC-VONG-BI', 2, {});
+      const a2c2 = await createNode(rootProductId, assy2, 2, 'MC-KEO-DAN', 1, {});
+
+      // Level 4+ deep chain under a1c2
+      const l4 = await createNode(rootProductId, a1c2, 1, 'MC-BANH-RANG', 2, {});
+      const l5 = await createNode(rootProductId, l4, 1, 'MC-DAN-THUY-LUC', 1, {});
+      await createNode(rootProductId, l5, 1, 'MC-NHAN-TEM', 4, {}); // level 6
+
+      // Extra branches
+      await createNode(rootProductId, a2c1, 3, 'MC-GIAY-NHAM', 10, {});
+      await createNode(rootProductId, a2c2, 3, 'MC-MANG-PE', 2, { tkVatTu: '155' });
+    }
+    await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
+    this.logger.log('✅ Seeded initial BOM data.');
   }
 }
