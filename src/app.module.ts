@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ProductModule } from './modules/product/product.module';
+import { MaterialCategoryModule } from './modules/material-category/material-category.module';
 import { SeedModule } from './modules/seed/seed.module';
 import configs from './common/configs';
 import { getTypeOrmConfig } from './common/configs/database.config';
@@ -40,6 +41,7 @@ import { getTypeOrmConfig } from './common/configs/database.config';
 
     // Feature modules
     ProductModule,
+    MaterialCategoryModule,
     SeedModule,
   ],
 })

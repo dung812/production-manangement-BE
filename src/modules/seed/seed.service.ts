@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SeedLog } from './seed-log.entity';
 import { Product } from '../product/product.entity';
+import { MaterialCategory } from '../material-category/material-category.entity';
 
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {
@@ -11,25 +12,316 @@ export class SeedService implements OnApplicationBootstrap {
   constructor(
     @InjectRepository(SeedLog) private readonly seedLogRepo: Repository<SeedLog>,
     @InjectRepository(Product) private readonly productRepo: Repository<Product>,
+    @InjectRepository(MaterialCategory) private readonly materialCategoryRepo: Repository<MaterialCategory>,
   ) {}
 
   async onApplicationBootstrap() {
-    // Toggle with env var so it doesn’t run in every environment.
+    // Toggle with env var so it doesn't run in every environment.
     if ((process.env.SEED_ON_START || '').toLowerCase() !== 'true') {
       return;
     }
 
+    await this.seedMaterialCategories();
+    await this.seedProducts();
+  }
+
+  private async seedMaterialCategories() {
+    const marker = 'material-categories-initialized';
+    const already = await this.seedLogRepo.findOne({ where: { name: marker } });
+    if (already) {
+      this.logger.log('Material categories seed skipped (already initialized).');
+      return;
+    }
+
+    // Idempotent guard: also skip if data already exists.
+    const count = await this.materialCategoryRepo.count();
+    if (count > 0) {
+      this.logger.log('Material categories seed skipped (table not empty).');
+      await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
+      return;
+    }
+
+    // Vietnamese material category data
+    const materialCategories: Partial<MaterialCategory>[] = [
+      {
+        code: 'VT-THEP-001',
+        name: 'Thép xây dựng',
+        detailName: 'Thép xây dựng các loại',
+        description: 'Thép dùng trong xây dựng công trình',
+        specifications: 'Tiêu chuẩn TCVN 1651:2008',
+        safetyStockNumber: 100,
+        unit: 'tấn',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-XI-MANG-001',
+        name: 'Xi măng Portland',
+        detailName: 'Xi măng Portland PC40',
+        description: 'Xi măng dùng cho xây dựng dân dụng và công nghiệp',
+        specifications: 'TCVN 2682:2009, PC40',
+        safetyStockNumber: 200,
+        unit: 'tấn',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-CAT-001',
+        name: 'Cát xây dựng',
+        detailName: 'Cát sạch xây dựng',
+        description: 'Cát dùng trong xây dựng và trộn bê tông',
+        specifications: 'Cát sạch, độ mịn 2.5-3.0',
+        safetyStockNumber: 50,
+        unit: 'm³',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-DA-001',
+        name: 'Đá dăm xây dựng',
+        detailName: 'Đá dăm 1x2 xây dựng',
+        description: 'Đá dăm dùng trong xây dựng và trộn bê tông',
+        specifications: 'Cỡ hạt 10-20mm',
+        safetyStockNumber: 30,
+        unit: 'm³',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-GACH-001',
+        name: 'Gạch xây',
+        detailName: 'Gạch đỏ nung xây dựng',
+        description: 'Gạch đỏ nung dùng xây tường',
+        specifications: 'Kích thước 220x105x60mm',
+        safetyStockNumber: 10000,
+        unit: 'viên',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-NGOI-001',
+        name: 'Ngói lợp',
+        detailName: 'Ngói đất nung lợp mái',
+        description: 'Ngói đất nung dùng lợp mái nhà',
+        specifications: 'Ngói âm dương, màu đỏ gạch',
+        safetyStockNumber: 5000,
+        unit: 'viên',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-THUY-TINH-001',
+        name: 'Thủy tinh xây dựng',
+        detailName: 'Kính cường lực xây dựng',
+        description: 'Kính cường lực dùng trong xây dựng',
+        specifications: 'Dày 8mm, kích thước 2m x 3m',
+        safetyStockNumber: 20,
+        unit: 'm²',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-SON-001',
+        name: 'Sơn nước nội thất',
+        detailName: 'Sơn nước cao cấp nội thất',
+        description: 'Sơn nước không mùi dùng cho nội thất',
+        specifications: 'Thùng 18L, màu trắng',
+        safetyStockNumber: 50,
+        unit: 'thùng',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-GO-001',
+        name: 'Gỗ thông xẻ',
+        detailName: 'Gỗ thông xẻ sấy khô',
+        description: 'Gỗ thông tự nhiên xẻ sấy khô',
+        specifications: 'Kích thước 5x10x400cm',
+        safetyStockNumber: 100,
+        unit: 'thanh',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-DINH-001',
+        name: 'Đinh thép',
+        detailName: 'Đinh thép mạ kẽm',
+        description: 'Đinh thép mạ kẽm chống rỉ sét',
+        specifications: 'Đường kính 3mm, dài 75mm',
+        safetyStockNumber: 1000,
+        unit: 'kg',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-THEP-BETONNG-001',
+        name: 'Thép bê tông',
+        detailName: 'Thép bê tông CB300-V',
+        description: 'Thép bê tông dùng đổ móng, cột, dầm',
+        specifications: 'Đường kính 12mm, CB300-V',
+        safetyStockNumber: 50,
+        unit: 'tấn',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-GACH-BLOCK-001',
+        name: 'Gạch block',
+        detailName: 'Gạch block bê tông nhẹ',
+        description: 'Gạch block bê tông nhẹ xây tường',
+        specifications: 'Kích thước 200x200x400mm',
+        safetyStockNumber: 2000,
+        unit: 'viên',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-CHAT-CHONG-THAM-001',
+        name: 'Chất chống thấm',
+        detailName: 'Chất chống thấm Sika',
+        description: 'Chất chống thấm gốc xi măng',
+        specifications: 'Bao 25kg, màu xám',
+        safetyStockNumber: 100,
+        unit: 'bao',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-GACH-LAT-001',
+        name: 'Gạch lát nền',
+        detailName: 'Gạch men lát nền 60x60',
+        description: 'Gạch men cao cấp lát nền phòng khách',
+        specifications: 'Kích thước 60x60cm, bóng kiếng',
+        safetyStockNumber: 500,
+        unit: 'm²',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-GACH-OP-001',
+        name: 'Gạch ốp tường',
+        detailName: 'Gạch men ốp tường 30x60',
+        description: 'Gạch men ốp tường phòng tắm, bếp',
+        specifications: 'Kích thước 30x60cm, mặt nhám',
+        safetyStockNumber: 300,
+        unit: 'm²',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-KEO-DAN-001',
+        name: 'Keo dán gạch',
+        detailName: 'Keo dán gạch chuyên dụng',
+        description: 'Keo dán gạch chống thấm, độ bám cao',
+        specifications: 'Bao 20kg, màu xám',
+        safetyStockNumber: 200,
+        unit: 'bao',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-CHAT-RON-001',
+        name: 'Chất rón khe',
+        detailName: 'Chất rón khe gạch chuyên dụng',
+        description: 'Chất rón khe chống thấm, chống nấm mốc',
+        specifications: 'Bao 5kg, màu trắng',
+        safetyStockNumber: 150,
+        unit: 'bao',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-THEP-HOP-001',
+        name: 'Thép hộp vuông',
+        detailName: 'Thép hộp vuông 50x50',
+        description: 'Thép hộp vuông dùng làm khung, cột',
+        specifications: 'Kích thước 50x50mm, dày 2mm',
+        safetyStockNumber: 20,
+        unit: 'tấn',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-THEP-TRON-001',
+        name: 'Thép tròn trơn',
+        detailName: 'Thép tròn trơn CT3',
+        description: 'Thép tròn trơn dùng gia công cơ khí',
+        specifications: 'Đường kính 20mm, CT3',
+        safetyStockNumber: 15,
+        unit: 'tấn',
+        type: 'raw_material',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+      {
+        code: 'VT-NHUA-PVC-001',
+        name: 'Ống nhựa PVC',
+        detailName: 'Ống nhựa PVC cấp nước',
+        description: 'Ống nhựa PVC dùng cấp nước sinh hoạt',
+        specifications: 'Đường kính 90mm, dài 6m',
+        safetyStockNumber: 200,
+        unit: 'cây',
+        type: 'finished',
+        isActive: true,
+        createdBy: 'admin',
+        updatedBy: 'admin',
+      },
+    ];
+
+    await this.materialCategoryRepo.save(this.materialCategoryRepo.create(materialCategories));
+    await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
+    this.logger.log('✅ Seeded Vietnamese material categories.');
+  }
+
+  private async seedProducts() {
     const marker = 'products-initialized';
     const already = await this.seedLogRepo.findOne({ where: { name: marker } });
     if (already) {
-      this.logger.log('Seed skipped (already initialized).');
+      this.logger.log('Products seed skipped (already initialized).');
       return;
     }
 
     // Idempotent guard: also skip if data already exists.
     const count = await this.productRepo.count();
     if (count > 0) {
-      this.logger.log('Seed skipped (products table not empty).');
+      this.logger.log('Products seed skipped (table not empty).');
       await this.seedLogRepo.save(this.seedLogRepo.create({ name: marker }));
       return;
     }
