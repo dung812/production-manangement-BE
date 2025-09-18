@@ -3,7 +3,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BomService } from './bom.service';
 import { CreateBomDto } from './dto/create-bom.dto';
 import { UpdateBomDto } from './dto/update-bom.dto';
-import { BomTreeQueryDto, QueryBomDto } from './dto/query-bom.dto';
+import { QueryBomDto } from './dto/query-bom.dto';
 import { BomListResponseDto, BomResponseDto, BomTreeNodeDto } from './dto/bom-response.dto';
 
 @ApiTags('BOM')
@@ -14,10 +14,7 @@ export class BomController {
   @Get('tree')
   @ApiOperation({ summary: 'Get complete BOM hierarchical tree structure' })
   @ApiResponse({ status: 200, type: [BomTreeNodeDto] })
-  tree(@Query() query?: BomTreeQueryDto): Promise<BomTreeNodeDto[]> {
-    if (query?.rootId != null) {
-      return this.bomService.buildTree(query.rootId);
-    }
+  tree(): Promise<BomTreeNodeDto[]> {
     return this.bomService.buildAllTrees();
   }
 
@@ -27,6 +24,13 @@ export class BomController {
   @ApiResponse({ status: 200, type: BomResponseDto })
   findOne(@Param('id', ParseIntPipe) id: number): Promise<BomResponseDto> {
     return this.bomService.findOne(id);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get BOM entries by root product ID with pagination and sorting' })
+  @ApiResponse({ status: 200, type: BomListResponseDto })
+  findAll(@Query() query: QueryBomDto): Promise<BomListResponseDto> {
+    return this.bomService.findAll(query);
   }
 
   @Put(':id')
@@ -45,13 +49,6 @@ export class BomController {
   @ApiOperation({ summary: 'Soft delete BOM entry' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.bomService.remove(id);
-  }
-
-  @Get()
-  @ApiOperation({ summary: 'Get BOM entries by root product ID with pagination and sorting' })
-  @ApiResponse({ status: 200, type: BomListResponseDto })
-  findAll(@Query() query: QueryBomDto): Promise<BomListResponseDto> {
-    return this.bomService.findAll(query);
   }
 
   @Post()
